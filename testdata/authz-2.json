@@ -1,0 +1,10 @@
+{
+  "admins": [
+    {
+      "data_type": "service",
+      "value": "nakadi-mock-service"
+    }
+  ],
+  "writers": [],
+  "readers": []
+}

@@ -1,0 +1,8 @@
+{
+  "admins": [
+    {
+      "data_type": "user",
+      "value": "nakadi-mock-admin-user"
+    }
+  ]
+}

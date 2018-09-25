@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'org.crazycoder'
+version '0.1'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.zalando:nakadi-plugin-api:2.0.0")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.9.6")
+
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.3.1")
+}
