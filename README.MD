@@ -47,5 +47,5 @@ Example file `authz.json`:
 
 Export Nakadi authz factory:
 ```
-export PLUGINS_AUTHZ_FACTORY=org.crazycoder.nakadiauthzfileplugin.FileAuthorizationServiceFactory
+export NAKADI_PLUGINS_AUTHZ_FACTORY=org.crazycoder.nakadiauthzfileplugin.FileAuthorizationServiceFactory
 ```
