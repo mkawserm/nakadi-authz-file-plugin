@@ -14,123 +14,159 @@ import java.util.Optional;
 
 public class FileAuthorizationServiceTest {
 
+    private final AuthorizationAttribute admin = new AuthorizationAttribute() {
+        @Override
+        public String getDataType() {
+            return "service";
+        }
+
+        @Override
+        public String getValue() {
+            return "nakadi-mock-admin-service";
+        }
+
+    };
+    private final AuthorizationAttribute write = new AuthorizationAttribute() {
+        @Override
+        public String getDataType() {
+            return "service";
+        }
+
+        @Override
+        public String getValue() {
+            return "nakadi-mock-writer-service";
+        }
+
+    };
+    private final AuthorizationAttribute read = new AuthorizationAttribute() {
+        @Override
+        public String getDataType() {
+            return "service";
+        }
+
+        @Override
+        public String getValue() {
+            return "nakadi-mock-reader-service";
+        }
+
+    };
+    private final Map<String, List<AuthorizationAttribute>> authorization = new HashMap<>();
+
+    public FileAuthorizationServiceTest() {
+        authorization.put("admin", Collections.singletonList(admin));
+        authorization.put("write", Collections.singletonList(write));
+        authorization.put("read", Collections.singletonList(read));
+    }
+
     @Test
     public void testShouldAuthorizeDefinedPermissions() {
         FileAuthorizationService service = (FileAuthorizationService) new FileAuthorizationServiceFactory()
                 .init(name -> "testdata/authz.json");
-        Assertions.assertTrue(service.isAuthorized(AuthorizationService.Operation.ADMIN,
-                new TestResource("service", "nakadi-mock-admin-service")));
-        Assertions.assertTrue(service.isAuthorized(AuthorizationService.Operation.ADMIN,
-                new TestResource("user", "nakadi-mock-admin-user")));
+        Assertions.assertTrue(
+                service.isAuthorized(AuthorizationService.Operation.ADMIN, new TestResource(authorization)));
+        Assertions.assertTrue(
+                service.isAuthorized(AuthorizationService.Operation.ADMIN, new TestResource(authorization)));
 
-        Assertions.assertTrue(service.isAuthorized(AuthorizationService.Operation.WRITE,
-                new TestResource("service", "nakadi-mock-writer-service")));
-        Assertions.assertTrue(service.isAuthorized(AuthorizationService.Operation.WRITE,
-                new TestResource("user", "nakadi-mock-writer-user")));
+        Assertions.assertTrue(
+                service.isAuthorized(AuthorizationService.Operation.WRITE, new TestResource(authorization)));
+        Assertions.assertTrue(
+                service.isAuthorized(AuthorizationService.Operation.WRITE, new TestResource(authorization)));
 
-        Assertions.assertTrue(service.isAuthorized(AuthorizationService.Operation.READ,
-                new TestResource("service", "nakadi-mock-reader-service")));
-        Assertions.assertTrue(service.isAuthorized(AuthorizationService.Operation.READ,
-                new TestResource("user", "nakadi-mock-reader-user")));
+        Assertions
+                .assertTrue(service.isAuthorized(AuthorizationService.Operation.READ, new TestResource(authorization)));
+        Assertions
+                .assertTrue(service.isAuthorized(AuthorizationService.Operation.READ, new TestResource(authorization)));
     }
 
     @Test
     public void testIsAuthorizationForResourceValid() {
         FileAuthorizationService service = (FileAuthorizationService) new FileAuthorizationServiceFactory()
                 .init(name -> "testdata/authz.json");
-        Map<String, List<AuthorizationAttribute>> authorization = new HashMap<>();
-        AuthorizationAttribute admin = new AuthorizationAttribute() {
-            @Override
-            public String getDataType() {
-                return "service";
-            }
-
-            @Override
-            public String getValue() {
-                return "nakadi-mock-admin-service";
-            }
-
-        };
-        AuthorizationAttribute write = new AuthorizationAttribute() {
-            @Override
-            public String getDataType() {
-                return "service";
-            }
-
-            @Override
-            public String getValue() {
-                return "nakadi-mock-writer-service";
-            }
-
-        };
-        AuthorizationAttribute read = new AuthorizationAttribute() {
-            @Override
-            public String getDataType() {
-                return "service";
-            }
-
-            @Override
-            public String getValue() {
-                return "nakadi-mock-reader-service";
-            }
-
-        };
-        authorization.put("admin", Collections.singletonList(admin));
-        authorization.put("write", Collections.singletonList(write));
-        authorization.put("read", Collections.singletonList(read));
-        service.isAuthorizationForResourceValid(new TestResource("test-auth-resource", null, authorization));
+        service.isAuthorizationForResourceValid(new TestResource(authorization));
     }
 
     @Test
     public void testShouldFailIfNotDefined() {
         FileAuthorizationService service = (FileAuthorizationService) new FileAuthorizationServiceFactory()
                 .init(name -> "testdata/authz.json");
-        Assertions.assertFalse(service.isAuthorized(AuthorizationService.Operation.WRITE,
-                new TestResource("service", "some-other-service")));
+        AuthorizationAttribute aa = new AuthorizationAttribute() {
+            @Override
+            public String getDataType() {
+                return "service";
+            }
+
+            @Override
+            public String getValue() {
+                return "some-other-service";
+            }
+
+        };
+        Map<String, List<AuthorizationAttribute>> authorization = new HashMap<>();
+        authorization.put("write", Collections.singletonList(aa));
+        Assertions.assertFalse(
+                service.isAuthorized(AuthorizationService.Operation.WRITE, new TestResource(authorization)));
     }
 
     @Test
     public void testShouldLoadFromEnvVarAndAuthorizeAdmin() {
         FileAuthorizationService service = (FileAuthorizationService) new FileAuthorizationServiceFactory()
                 .init(name -> "testdata/authz-2.json");
-        Assertions.assertTrue(service.isAuthorized(AuthorizationService.Operation.ADMIN,
-                new TestResource("service", "nakadi-mock-service")));
+        AuthorizationAttribute aa = new AuthorizationAttribute() {
+            @Override
+            public String getDataType() {
+                return "service";
+            }
+
+            @Override
+            public String getValue() {
+                return "nakadi-mock-service";
+            }
+
+        };
+        Map<String, List<AuthorizationAttribute>> authorization = new HashMap<>();
+        authorization.put("admin", Collections.singletonList(aa));
+        Assertions.assertTrue(
+                service.isAuthorized(AuthorizationService.Operation.ADMIN, new TestResource(authorization)));
     }
 
     @Test
     public void testShouldLoadConfigEvenWithNoWritersAndReaders() {
         FileAuthorizationService service = (FileAuthorizationService) new FileAuthorizationServiceFactory()
                 .init(name -> "testdata/authz-3.json");
-        Assertions.assertTrue(service.isAuthorized(AuthorizationService.Operation.ADMIN,
-                new TestResource("user", "nakadi-mock-admin-user")));
+        AuthorizationAttribute aa = new AuthorizationAttribute() {
+            @Override
+            public String getDataType() {
+                return "user";
+            }
+
+            @Override
+            public String getValue() {
+                return "nakadi-mock-admin-user";
+            }
+
+        };
+        Map<String, List<AuthorizationAttribute>> authorization = new HashMap<>();
+        authorization.put("admin", Collections.singletonList(aa));
+        Assertions.assertTrue(
+                service.isAuthorized(AuthorizationService.Operation.ADMIN, new TestResource(authorization)));
     }
 
     private class TestResource implements Resource<String> {
 
-        private final String type;
-        private final String name;
         private final Map<String, List<AuthorizationAttribute>> authorization;
 
-        public TestResource(String type, String name) {
-            this.name = name;
-            this.type = type;
-            this.authorization = null;
-        }
-
-        public TestResource(String name, String type, Map<String, List<AuthorizationAttribute>> authorization) {
-            this.name = name;
-            this.type = type;
+        public TestResource(Map<String, List<AuthorizationAttribute>> authorization) {
             this.authorization = authorization;
         }
 
         @Override
         public String getName() {
-            return name;
+            return "name-test";
         }
 
         @Override
         public String getType() {
-            return type;
+            return "type-test";
         }
 
         @Override

@@ -61,8 +61,21 @@ public class FileAuthorizationService implements AuthorizationService {
             return false;
         }
 
-        return dataTypeName.entrySet().stream().anyMatch(
-                entry -> entry.getKey().equals(resource.getType()) && entry.getValue().equals(resource.getName()));
+        if (resource == null || resource.getAuthorization() == null) {
+            return true;
+        }
+
+        Map<String, List<AuthorizationAttribute>> authorization = resource.getAuthorization();
+        for (Map.Entry<String, List<AuthorizationAttribute>> entry : authorization.entrySet()) {
+            for (AuthorizationAttribute aa : entry.getValue()) {
+                Map<String, String> dataTypeValue = mockedData.get(Operation.valueOf(entry.getKey().toUpperCase()));
+                if (dataTypeValue.get(aa.getDataType()).equals(aa.getValue())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
