@@ -6,7 +6,7 @@
     },
     {
       "data_type": "service",
-      "value": "adminClientId"
+      "value": "nakadi-mock-admin-service"
     }
   ],
   "writers": [

@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'org.crazycoder'
-version '0.1'
+version '0.2'
 
 sourceCompatibility = 1.8
 
@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile("org.zalando:nakadi-plugin-api:2.0.0")
+    compile("org.zalando:nakadi-plugin-api:3.2.1")
     compile("com.fasterxml.jackson.core:jackson-databind:2.9.6")
 
     testCompile("org.junit.jupiter:junit-jupiter-api:5.3.1")

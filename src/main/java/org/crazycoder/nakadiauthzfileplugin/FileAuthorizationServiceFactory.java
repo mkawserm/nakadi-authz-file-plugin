@@ -1,19 +1,22 @@
 package org.crazycoder.nakadiauthzfileplugin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.zalando.nakadi.plugin.api.PluginException;
-import org.zalando.nakadi.plugin.api.SystemProperties;
-import org.zalando.nakadi.plugin.api.authz.AuthorizationService;
-import org.zalando.nakadi.plugin.api.authz.AuthorizationServiceFactory;
-
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.zalando.nakadi.plugin.api.SystemProperties;
+import org.zalando.nakadi.plugin.api.authz.AuthorizationService;
+import org.zalando.nakadi.plugin.api.authz.AuthorizationServiceFactory;
+import org.zalando.nakadi.plugin.api.exceptions.PluginException;
+
 /**
- * Creates {@link FileAuthorizationService} based on provided JSON configuration file.
+ * Creates {@link FileAuthorizationService} based on provided JSON configuration
+ * file.
  * <p>
  * Configuration file example:
  * <p>
+ * 
  * <pre>
  * {
  *      "admins": [
@@ -37,8 +40,8 @@ public class FileAuthorizationServiceFactory implements AuthorizationServiceFact
             ObjectMapper objectMapper = new ObjectMapper();
             String mockedDataFile = properties.getProperty("nakadi.authz.file.plugin.authz-file");
             if (mockedDataFile == null || mockedDataFile.isEmpty()) {
-                throw new PluginException("Configuration file was not found in classpath," +
-                        " define as env var `nakadi.authz.file.plugin.authz-file`");
+                throw new PluginException("Configuration file was not found in classpath,"
+                        + " define as env var `nakadi.authz.file.plugin.authz-file`");
             }
 
             return new FileAuthorizationService(objectMapper.readTree(Paths.get(mockedDataFile).toFile()));
