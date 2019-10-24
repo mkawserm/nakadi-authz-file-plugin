@@ -79,6 +79,14 @@ public class FileAuthorizationServiceTest {
     }
 
     @Test
+    public void testShouldAuthorizeOperationView() {
+        FileAuthorizationService service = (FileAuthorizationService) new FileAuthorizationServiceFactory()
+                .init(name -> "testdata/authz.json");
+        Assertions
+                .assertTrue(service.isAuthorized(AuthorizationService.Operation.VIEW, new TestResource(authorization)));
+    }
+
+    @Test
     public void testIsAuthorizationForResourceValid() {
         FileAuthorizationService service = (FileAuthorizationService) new FileAuthorizationServiceFactory()
                 .init(name -> "testdata/authz.json");

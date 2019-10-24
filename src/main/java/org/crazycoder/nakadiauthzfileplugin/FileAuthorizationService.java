@@ -56,6 +56,10 @@ public class FileAuthorizationService implements AuthorizationService {
 
     @Override
     public boolean isAuthorized(Operation operation, Resource resource) throws PluginException {
+        if (operation == Operation.VIEW) {
+            return true;
+        }
+
         Map<String, String> dataTypeName = mockedData.get(operation);
         if (dataTypeName == null) {
             return false;
