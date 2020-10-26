@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import org.zalando.nakadi.plugin.api.authz.AuthorizationAttribute;
 import org.zalando.nakadi.plugin.api.authz.AuthorizationService;
@@ -17,6 +15,12 @@ import org.zalando.nakadi.plugin.api.authz.Subject;
 import org.zalando.nakadi.plugin.api.exceptions.AuthorizationInvalidException;
 import org.zalando.nakadi.plugin.api.exceptions.OperationOnResourceNotPermittedException;
 import org.zalando.nakadi.plugin.api.exceptions.PluginException;
+
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+
 
 /**
  * Parses provided configuration and prepares the data to be retrieved from the
@@ -56,7 +60,7 @@ public class FileAuthorizationService implements AuthorizationService {
     @Override
     public void isAuthorizationForResourceValid(Resource resource)
             throws PluginException, AuthorizationInvalidException, OperationOnResourceNotPermittedException {
-                
+
         // if (resource == null || resource.getAuthorization() == null) {
         //     return;
         // }
@@ -84,5 +88,14 @@ public class FileAuthorizationService implements AuthorizationService {
     @Override
     public Optional<Subject> getSubject() throws PluginException {
         return Optional.empty();
+    }
+
+    public String getToken() {
+        String token = null;
+        OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            token = ((OAuth2AuthenticationDetails) authentication.getDetails()).getTokenValue();
+        }
+        return token;
     }
 }
