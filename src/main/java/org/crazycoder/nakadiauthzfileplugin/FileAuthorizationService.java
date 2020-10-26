@@ -16,10 +16,22 @@ import org.zalando.nakadi.plugin.api.exceptions.AuthorizationInvalidException;
 import org.zalando.nakadi.plugin.api.exceptions.OperationOnResourceNotPermittedException;
 import org.zalando.nakadi.plugin.api.exceptions.PluginException;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+
+
+class ServiceName implements Subject {
+    public ServiceName() {
+
+    }
+    
+    public String getName() {
+       return "nakadi-authz-plugin";
+   }
+}
 
 
 /**
@@ -87,7 +99,8 @@ public class FileAuthorizationService implements AuthorizationService {
 
     @Override
     public Optional<Subject> getSubject() throws PluginException {
-        return Optional.empty();
+        Optional<Subject> opt = Optional.of(new ServiceName());
+        return opt;
     }
 
     public String getToken() {
@@ -97,5 +110,22 @@ public class FileAuthorizationService implements AuthorizationService {
             token = ((OAuth2AuthenticationDetails) authentication.getDetails()).getTokenValue();
         }
         return token;
+    }
+
+
+    public String getUsername() {
+        try {
+            return Optional.of(SecurityContextHolder.getContext())
+                    .map(SecurityContext::getAuthentication)
+                    .map(authentication -> (OAuth2Authentication) authentication)
+                    .map(OAuth2Authentication::getUserAuthentication)
+                    .map(Authentication::getDetails)
+                    .map(details -> (Map) details)
+                    .map(details -> details.get("username"))
+                    .map(username -> (String) username)
+                    .orElse("");
+        } catch (final ClassCastException e) {
+            return "";
+        }
     }
 }
