@@ -36,17 +36,6 @@ public class FileAuthorizationServiceFactory implements AuthorizationServiceFact
 
     @Override
     public AuthorizationService init(SystemProperties properties) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String mockedDataFile = properties.getProperty("nakadi.authz.file.plugin.authz-file");
-            if (mockedDataFile == null || mockedDataFile.isEmpty()) {
-                throw new PluginException("Configuration file was not found in classpath,"
-                        + " define as env var `nakadi.authz.file.plugin.authz-file`");
-            }
-
-            return new FileAuthorizationService(objectMapper.readTree(Paths.get(mockedDataFile).toFile()));
-        } catch (IOException e) {
-            throw new PluginException("Failed to load authz file", e);
-        }
+        return new FileAuthorizationService();
     }
 }
