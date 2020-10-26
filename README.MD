@@ -1,6 +1,5 @@
 # Overview
-File based implementation of authz plugin https://github.com/zalando-nakadi/nakadi-plugin-api for https://github
-.com/zalando/nakadi
+File based implementation of authz plugin https://github.com/zalando-nakadi/nakadi-plugin-api for https://github.com/zalando/nakadi
 
 # Usage
 Export path to file with permissions through env var: 
